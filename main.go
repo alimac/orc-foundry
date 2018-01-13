@@ -82,13 +82,13 @@ func PutOrcHandler(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	if orc, ok := orcStore[k]; ok {
+	if orc, ok := orcStore[key]; ok {
 		orcToUpdate.CreatedOn = orc.CreatedOn
 		// delete the existing item and add the updated item
-		delete(orcStore, k)
-		orcStore[k] = orcToUpdate
+		delete(orcStore, key)
+		orcStore[key] = orcToUpdate
 	} else {
-		log.Printf("Could not find key of Orc %s to update", k)
+		log.Printf("Could not find key of Orc %s to update", key)
 	}
 	w.WriteHeader(http.StatusNoContent)
 }
@@ -96,13 +96,13 @@ func PutOrcHandler(w http.ResponseWriter, r *http.Request) {
 // DeleteOrcHandler provides an endpoint for deleting existing Orcs
 func DeleteOrcHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	k := vars["id"]
+	key := vars["id"]
 	// Remove from store
-	if _, ok := orcStore[k]; ok {
+	if _, ok := orcStore[key]; ok {
 		// Delete existing item
-		delete(orcStore, k)
+		delete(orcStore, key)
 	} else {
-		log.Printf("Could not find key of Orc %s to delete", k)
+		log.Printf("Could not find key of Orc %s to delete", key)
 	}
 	w.WriteHeader(http.StatusNoContent)
 }
