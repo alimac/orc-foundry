@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Orc type provides an orc with a name and greeting
 type Orc struct {
 	Name      string    `json:"name"`
 	Greeting  string    `json:"greeting"`
@@ -21,9 +22,9 @@ type Orc struct {
 var orcStore = make(map[string]Orc)
 
 // Variable to generate key for the collection
-var id int = 0
+var id int
 
-// HTTP Get - /api/orcs
+// GetOrcHandler provides an endpoint for getting Orcs
 func GetOrcHandler(w http.ResponseWriter, r *http.Request) {
 	var orcs []Orc
 
@@ -42,7 +43,7 @@ func GetOrcHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// HTTP Post - /api/orcs
+// PostOrcHandler provides an endpoint for creating new Orcs
 func PostOrcHandler(w http.ResponseWriter, r *http.Request) {
 
 	var orc Orc
@@ -68,10 +69,11 @@ func PostOrcHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// PutOrcHandler provides an endpoint for updating existing Orcs
 func PutOrcHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
 	vars := mux.Vars(r)
-	k := vars["id"]
+	key := vars["id"]
 	var orcToUpdate Orc
 
 	// Decode the incoming Orc json
@@ -91,6 +93,7 @@ func PutOrcHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// DeleteOrcHandler provides an endpoint for deleting existing Orcs
 func DeleteOrcHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	k := vars["id"]
