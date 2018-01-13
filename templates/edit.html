@@ -1,0 +1,15 @@
+{{define "head"}}<title>Reforge an orc</title>{{end}}
+{{define "body"}}
+<h1>Reforge an orc</h1>
+<form action="/orcs/update/{{.ID}}" method="post">
+  <p>
+    Name: <input type="text" value="{{.Orc.Name}}" name="name">
+  </p>
+  <p>
+    Greeting: <input type="text" value="{{.Orc.Greeting}}" name="greeting">
+  </p>
+  <p>
+    <input type="submit" value="Reforge">
+  </p>
+</form>
+{{end}}

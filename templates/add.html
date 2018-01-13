@@ -1,0 +1,15 @@
+{{define "head"}}<title>Forge a new orc</title>{{end}}
+{{define "body"}}
+<h1>Forge a new orc</h1>
+<form action="/orcs/save" method="post">
+  <p>
+    Name: <input type="text" name="name">
+  </p>
+  <p>
+    Greeting: <input type="text" name="greeting">
+  </p>
+  <p>
+    <input type="submit" value="Forge">
+  </p>
+</form>
+{{end}}

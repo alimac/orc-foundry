@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"html/template"
 	//"fmt"
 	"log"
 	"net/http"
@@ -11,11 +12,123 @@ import (
 	"github.com/gorilla/mux"
 )
 
+var templates map[string]*template.Template
+
+// Compile view templates
+func init() {
+	if templates == nil {
+		templates = make(map[string]*template.Template)
+	}
+	templates["index"] = template.Must(template.ParseFiles("templates/index.html",
+		"templates/base.html"))
+	templates["add"] = template.Must(template.ParseFiles("templates/add.html",
+		"templates/base.html"))
+	templates["edit"] = template.Must(template.ParseFiles("templates/edit.html",
+		"templates/base.html"))
+}
+
+// Render templates for the given name, template definition and data object
+func renderTemplate(w http.ResponseWriter, name string, template string, viewModel interface{}) {
+	// Ensure template exists in the map
+	tmpl, ok := templates[name]
+	if !ok {
+		http.Error(w, "Template does not exist", http.StatusInternalServerError)
+	}
+	err := tmpl.ExecuteTemplate(w, template, viewModel)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+// getOrcs
+func getOrcs(w http.ResponseWriter, r *http.Request) {
+	renderTemplate(w, "index", "base", orcStore)
+}
+
+// addOrc
+func addOrc(w http.ResponseWriter, r *http.Request) {
+	renderTemplate(w, "add", "base", nil)
+}
+
+// saveOrc
+func saveOrc(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	name := r.PostFormValue("name")
+	greeting := r.PostFormValue("greeting")
+	orc := Orc{name, greeting, time.Now()}
+
+	// increment value of id for generating key for the map
+	id++
+	// convert id value to string
+	key := strconv.Itoa(id)
+	orcStore[key] = orc
+	http.Redirect(w, r, "/", 302)
+}
+
+// editOrc
+func editOrc(w http.ResponseWriter, r *http.Request) {
+	var viewModel EditOrc
+
+	// read value from route variable
+	vars := mux.Vars(r)
+	key := vars["id"]
+
+	if orc, ok := orcStore[key]; ok {
+		viewModel = EditOrc{orc, key}
+	} else {
+		http.Error(w, "Could not find the Orc to edit", http.StatusBadRequest)
+	}
+	renderTemplate(w, "edit", "base", viewModel)
+}
+
+// updateOrc
+func updateOrc(w http.ResponseWriter, r *http.Request) {
+	// Read values from route variable
+	vars := mux.Vars(r)
+	key := vars["id"]
+	var orcToUpdate Orc
+	if orc, ok := orcStore[key]; ok {
+		r.ParseForm()
+		orcToUpdate.Name = r.PostFormValue("name")
+		orcToUpdate.Greeting = r.PostFormValue("greeting")
+		orcToUpdate.CreatedOn = orc.CreatedOn
+
+		// delete existing item and add the updated item
+		delete(orcStore, key)
+		orcStore[key] = orcToUpdate
+
+	} else {
+		http.Error(w, "Could not find the Orc to update", http.StatusBadRequest)
+	}
+	http.Redirect(w, r, "/", 302)
+}
+
+// deleteOrc is a handler for "/orcs/delete/{id}" which deletes an item from the store
+func deleteOrc(w http.ResponseWriter, r *http.Request) {
+	// read value from the route Variable
+	vars := mux.Vars(r)
+	key := vars["id"]
+	// Remove from the Store
+	if _, ok := orcStore[key]; ok {
+		// delete existing item
+		delete(orcStore, key)
+	} else {
+		http.Error(w, "Could not find the Orc to delete", http.StatusBadRequest)
+	}
+	http.Redirect(w, r, "/", 302)
+}
+
 // Orc type provides an orc with a name and greeting
 type Orc struct {
 	Name      string    `json:"name"`
 	Greeting  string    `json:"greeting"`
 	CreatedOn time.Time `json:"createdon"`
+}
+
+// EditOrc is a view model for editing Orcs
+type EditOrc struct {
+	Orc
+	ID string
 }
 
 // Store for the Orcs collection
@@ -37,10 +150,8 @@ func GetOrcHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-
 	w.WriteHeader(http.StatusOK)
 	w.Write(json)
-
 }
 
 // PostOrcHandler provides an endpoint for creating new Orcs
@@ -55,8 +166,8 @@ func PostOrcHandler(w http.ResponseWriter, r *http.Request) {
 
 	orc.CreatedOn = time.Now()
 	id++
-	k := strconv.Itoa(id)
-	orcStore[k] = orc
+	key := strconv.Itoa(id)
+	orcStore[key] = orc
 
 	json, err := json.Marshal(orc)
 	if err != nil {
@@ -109,7 +220,20 @@ func DeleteOrcHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
+	// Create sample orcs
+	id++
+	orcStore[strconv.Itoa(id)] = Orc{"Urkhat", "Dabu", time.Now()}
+	id++
+	orcStore[strconv.Itoa(id)] = Orc{"Pigdug", "Zub zub", time.Now()}
+
 	r := mux.NewRouter().StrictSlash(false)
+	r.HandleFunc("/", getOrcs)
+	r.HandleFunc("/orcs/add", addOrc)
+	r.HandleFunc("/orcs/save", saveOrc)
+	r.HandleFunc("/orcs/edit/{id}", editOrc)
+	r.HandleFunc("/orcs/update/{id}", updateOrc)
+	r.HandleFunc("/orcs/delete/{id}", deleteOrc)
+
 	r.HandleFunc("/api/orcs", GetOrcHandler).Methods("GET")
 	r.HandleFunc("/api/orcs", PostOrcHandler).Methods("POST")
 	r.HandleFunc("/api/orcs/{id}", PutOrcHandler).Methods("PUT")

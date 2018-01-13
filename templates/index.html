@@ -1,0 +1,14 @@
+{{define "head"}}<title>Orcs</title>{{end}}
+{{define "body"}}
+<h1>Orcs!</h1>
+<a href="/orcs/add">Another orc!</a>
+
+<ol>
+  {{range $key,$value := .}}
+  <li>{{$value.Name}} says "{{$value.Greeting}}!"
+    <a href="/orcs/edit/{{$key}}">update {{$value.Name}}</a> or
+    <a href="/orcs/delete/{{$key}}">tell {{$value.Name}} to go away</a>
+  </li>
+  {{end}}
+</ol>
+{{end}}
