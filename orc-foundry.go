@@ -49,8 +49,8 @@ func getOrcs(w http.ResponseWriter, r *http.Request) {
 // addOrc
 func addOrc(w http.ResponseWriter, r *http.Request) {
 	var viewModel OrcModel
-	viewModel = OrcModel{Orc{orc.GenerateName(), orc.GenerateGreeting(),
-		orc.GenerateWeapon(), time.Now()}, "0"}
+	viewModel = OrcModel{Orc{orc.Forge("name"), orc.Forge("greeting"),
+		orc.Forge("weapon"), time.Now()}, "0"}
 
 	renderTemplate(w, "add", "base", viewModel)
 }
