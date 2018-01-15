@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/alimac/orc"
 	"github.com/gorilla/mux"
 )
 
@@ -47,7 +48,10 @@ func getOrcs(w http.ResponseWriter, r *http.Request) {
 
 // addOrc
 func addOrc(w http.ResponseWriter, r *http.Request) {
-	renderTemplate(w, "add", "base", nil)
+	var viewModel OrcModel
+	viewModel = OrcModel{Orc{orc.GenerateName(), "", time.Now()}, "0"}
+
+	renderTemplate(w, "add", "base", viewModel)
 }
 
 // saveOrc
@@ -67,14 +71,14 @@ func saveOrc(w http.ResponseWriter, r *http.Request) {
 
 // editOrc
 func editOrc(w http.ResponseWriter, r *http.Request) {
-	var viewModel EditOrc
+	var viewModel OrcModel
 
 	// read value from route variable
 	vars := mux.Vars(r)
 	key := vars["id"]
 
 	if orc, ok := orcStore[key]; ok {
-		viewModel = EditOrc{orc, key}
+		viewModel = OrcModel{orc, key}
 	} else {
 		http.Error(w, "Could not find the Orc to edit", http.StatusBadRequest)
 	}
@@ -125,8 +129,8 @@ type Orc struct {
 	CreatedOn time.Time `json:"createdon"`
 }
 
-// EditOrc is a view model for editing Orcs
-type EditOrc struct {
+// OrcModel is a view model for editing Orcs
+type OrcModel struct {
 	Orc
 	ID string
 }
