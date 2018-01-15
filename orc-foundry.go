@@ -250,9 +250,11 @@ func main() {
 	r.HandleFunc("/api/orcs/{id}", DeleteOrcHandler).Methods("DELETE")
 
 	server := &http.Server{
-		Addr:    ":8080",
-		Handler: r,
+		Addr:         ":8080",
+		Handler:      r,
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
 	}
 
-	server.ListenAndServe()
+	log.Fatal(server.ListenAndServe())
 }
