@@ -5,8 +5,8 @@
 
 <ol>
   {{range $key,$value := .}}
-  <li>{{$value.Name}} says "{{$value.Greeting}}!"
-    <a href="/orcs/edit/{{$key}}">update {{$value.Name}}</a> or
+  <li>Holding {{$value.Weapon}}, {{$value.Name}} says "{{$value.Greeting}}!"
+    <a href="/orcs/edit/{{$key}}">reforge {{$value.Name}}</a> or
     <a href="/orcs/delete/{{$key}}">tell {{$value.Name}} to go away</a>
   </li>
   {{end}}

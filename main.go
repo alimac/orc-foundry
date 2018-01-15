@@ -49,7 +49,8 @@ func getOrcs(w http.ResponseWriter, r *http.Request) {
 // addOrc
 func addOrc(w http.ResponseWriter, r *http.Request) {
 	var viewModel OrcModel
-	viewModel = OrcModel{Orc{orc.GenerateName(), orc.GenerateGreeting(), time.Now()}, "0"}
+	viewModel = OrcModel{Orc{orc.GenerateName(), orc.GenerateGreeting(),
+		orc.GenerateWeapon(), time.Now()}, "0"}
 
 	renderTemplate(w, "add", "base", viewModel)
 }
@@ -59,7 +60,8 @@ func saveOrc(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	name := r.PostFormValue("name")
 	greeting := r.PostFormValue("greeting")
-	orc := Orc{name, greeting, time.Now()}
+	weapon := r.PostFormValue("weapon")
+	orc := Orc{name, greeting, weapon, time.Now()}
 
 	// increment value of id for generating key for the map
 	id++
@@ -95,6 +97,7 @@ func updateOrc(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
 		orcToUpdate.Name = r.PostFormValue("name")
 		orcToUpdate.Greeting = r.PostFormValue("greeting")
+		orcToUpdate.Weapon = r.PostFormValue("weapon")
 		orcToUpdate.CreatedOn = orc.CreatedOn
 
 		// delete existing item and add the updated item
@@ -126,6 +129,7 @@ func deleteOrc(w http.ResponseWriter, r *http.Request) {
 type Orc struct {
 	Name      string    `json:"name"`
 	Greeting  string    `json:"greeting"`
+	Weapon    string    `json:"weapon"`
 	CreatedOn time.Time `json:"createdon"`
 }
 
@@ -226,12 +230,14 @@ func main() {
 
 	// Create sample orcs
 	id++
-	orcStore[strconv.Itoa(id)] = Orc{"Urkhat", "Dabu", time.Now()}
+	orcStore[strconv.Itoa(id)] = Orc{"Urkhat", "Dabu", "DoomHammer", time.Now()}
 	id++
-	orcStore[strconv.Itoa(id)] = Orc{"Pigdug", "Zub zub", time.Now()}
+	orcStore[strconv.Itoa(id)] = Orc{"Pigdug", "Zub zub", "DeathKettle", time.Now()}
+
 
 	r := mux.NewRouter().StrictSlash(false)
 	r.HandleFunc("/", getOrcs)
+	r.HandleFunc("/orcs/", getOrcs)
 	r.HandleFunc("/orcs/add", addOrc)
 	r.HandleFunc("/orcs/save", saveOrc)
 	r.HandleFunc("/orcs/edit/{id}", editOrc)
