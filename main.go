@@ -49,7 +49,7 @@ func getOrcs(w http.ResponseWriter, r *http.Request) {
 // addOrc
 func addOrc(w http.ResponseWriter, r *http.Request) {
 	var viewModel OrcModel
-	viewModel = OrcModel{Orc{orc.GenerateName(), "", time.Now()}, "0"}
+	viewModel = OrcModel{Orc{orc.GenerateName(), orc.GenerateGreeting(), time.Now()}, "0"}
 
 	renderTemplate(w, "add", "base", viewModel)
 }
