@@ -119,11 +119,10 @@ func updateOrc(w http.ResponseWriter, r *http.Request) {
 		// delete existing item and add the updated item
 		delete(orcStore, key)
 		orcStore[key] = orcToUpdate
-
+		http.Redirect(w, r, "/", 302)
 	} else {
 		http.Error(w, "Could not find the Orc to update", http.StatusBadRequest)
 	}
-	http.Redirect(w, r, "/", 302)
 }
 
 // deleteOrc is a handler for "/orcs/delete/{id}" which deletes an item from the store
@@ -135,10 +134,10 @@ func deleteOrc(w http.ResponseWriter, r *http.Request) {
 	if _, ok := orcStore[key]; ok {
 		// delete existing item
 		delete(orcStore, key)
+		http.Redirect(w, r, "/", 302)
 	} else {
 		http.Error(w, "Could not find the Orc to delete", http.StatusBadRequest)
 	}
-	http.Redirect(w, r, "/", 302)
 }
 
 func main() {
