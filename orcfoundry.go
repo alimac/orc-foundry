@@ -80,10 +80,10 @@ func editOrc(w http.ResponseWriter, r *http.Request) {
 
 	if orc, ok := orcStore[key]; ok {
 		viewModel = OrcModel{orc, key}
+		renderTemplate(w, "edit", "base", viewModel)
 	} else {
 		http.Error(w, "Could not find the Orc to edit", http.StatusBadRequest)
 	}
-	renderTemplate(w, "edit", "base", viewModel)
 }
 
 // editOrc
@@ -96,10 +96,11 @@ func getOrc(w http.ResponseWriter, r *http.Request) {
 
 	if orc, ok := orcStore[key]; ok {
 		viewModel = OrcModel{orc, key}
+		renderTemplate(w, "view", "base", viewModel)
 	} else {
 		http.Error(w, "Could not find the Orc to view", http.StatusNotFound)
 	}
-	renderTemplate(w, "view", "base", viewModel)
+
 }
 
 // updateOrc
