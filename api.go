@@ -91,10 +91,12 @@ func PutOrcHandler(w http.ResponseWriter, r *http.Request) {
 		// delete the existing item and add the updated item
 		delete(orcStore, key)
 		orcStore[key] = orcToUpdate
+		w.WriteHeader(http.StatusNoContent)
 	} else {
 		log.Printf("Could not find key of Orc %s to update", key)
+		w.WriteHeader(http.StatusBadRequest)
 	}
-	w.WriteHeader(http.StatusNoContent)
+
 }
 
 // DeleteOrcHandler provides an endpoint for deleting existing Orcs
@@ -108,6 +110,6 @@ func DeleteOrcHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
 	} else {
 		log.Printf("Could not find key of Orc %s to delete", key)
-		w.WriteHeader(http.StatusNotFound)
+		w.WriteHeader(http.StatusBadRequest)
 	}
 }

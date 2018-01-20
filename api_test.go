@@ -79,6 +79,11 @@ func TestDeleteOrcHandler(t *testing.T) {
 	req, _ = http.NewRequest(http.MethodGet, "/api/orcs/1", nil)
 	res = executeRequest(req)
 	checkResponseCode(t, http.StatusNotFound, res.Code)
+
+	// Delete non-existent orc
+	req, _ = http.NewRequest(http.MethodDelete, "/api/orcs/666", nil)
+	res = executeRequest(req)
+	checkResponseCode(t, http.StatusBadRequest, res.Code)
 }
 
 func TestPostOrcHandler(t *testing.T) {
@@ -121,4 +126,8 @@ func TestPutOrcHandler(t *testing.T) {
 		t.Errorf("Expected orc name to change from %v to %v", orig["name"], new["name"])
 	}
 
+	// Update non-existent orc
+	req, _ = http.NewRequest(http.MethodPut, "/api/orcs/666", bytes.NewBuffer(payload))
+	res = executeRequest(req)
+	checkResponseCode(t, http.StatusBadRequest, res.Code)
 }
