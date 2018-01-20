@@ -8,7 +8,6 @@ import (
 	"net/http/httptest"
 	"os"
 	"strconv"
-	"strings"
 	"testing"
 	"time"
 )
@@ -81,9 +80,9 @@ func TestDeleteOrcHandler(t *testing.T) {
 }
 
 func TestPostOrcHandler(t *testing.T) {
-	orcJSON := `{"name": "Buldig", "greeting": "Swobu", "weapon":"DoomKitten"}`
+	payload := []byte(`{"name": "Buldig", "greeting": "Swobu", "weapon":"DoomKitten"}`)
 
-	req, _ := http.NewRequest(http.MethodPost, "/api/orcs", strings.NewReader(orcJSON))
+	req, _ := http.NewRequest(http.MethodPost, "/api/orcs", bytes.NewBuffer(payload))
 	res := executeRequest(req)
 	checkResponseCode(t, http.StatusCreated, res.Code)
 }
