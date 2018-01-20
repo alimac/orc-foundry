@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -27,25 +26,29 @@ func TestGetOrcs(t *testing.T) {
 
 func TestEditOrc(t *testing.T) {
 	setupOrcs(1)
-	id := 1
 
-	req, _ := http.NewRequest(http.MethodGet, fmt.Sprintf("/orcs/edit/%d", id), nil)
+	// Edit an existing orc
+	req, _ := http.NewRequest(http.MethodGet, "/orcs/edit/1", nil)
 	res := executeRequest(req)
 	checkResponseCode(t, http.StatusOK, res.Code)
 	checkContent(t, res.Body.String(), "Reforge an orc")
+
+	// Edit non-existent orc
+	req, _ = http.NewRequest(http.MethodGet, "/orcs/edit/666", nil)
+	res = executeRequest(req)
+	checkResponseCode(t, http.StatusBadRequest, res.Code)
 }
 
 func TestDeleteOrc(t *testing.T) {
 	setupOrcs(1)
-	id := 1
 
 	// Delete orc
-	req, _ := http.NewRequest(http.MethodDelete, fmt.Sprintf("/orcs/delete/%d", id), nil)
+	req, _ := http.NewRequest(http.MethodDelete, "/orcs/delete/1", nil)
 	res := executeRequest(req)
 	checkResponseCode(t, http.StatusFound, res.Code)
 
 	// Verify orc does not exist
-	req, _ = http.NewRequest(http.MethodGet, fmt.Sprintf("/orcs/view/%d", id), nil)
+	req, _ = http.NewRequest(http.MethodGet, "/orcs/view/1", nil)
 	res = executeRequest(req)
 	checkResponseCode(t, http.StatusNotFound, res.Code)
 }
@@ -75,6 +78,12 @@ func TestUpdateOrc(t *testing.T) {
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	res := executeRequest(req)
 	checkResponseCode(t, http.StatusFound, res.Code)
+
+	// Update non-existent orc
+	req, _ = http.NewRequest(http.MethodPut, "/orcs/update/666", bytes.NewBufferString(payload.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	res = executeRequest(req)
+	checkResponseCode(t, http.StatusBadRequest, res.Code)
 
 	// Verify orc is updated
 	req, _ = http.NewRequest(http.MethodGet, "/orcs/view/1", nil)
