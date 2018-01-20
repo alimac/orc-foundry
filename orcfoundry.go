@@ -140,12 +140,6 @@ func deleteOrc(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", 302)
 }
 
-// OrcModel is a view model for editing Orcs
-type OrcModel struct {
-	Orc
-	ID string
-}
-
 func main() {
 	app := App{}
 	app.Initialize()

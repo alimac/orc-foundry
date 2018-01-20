@@ -15,3 +15,9 @@ var orcStore = make(map[string]Orc)
 
 // Variable to generate key for the collection
 var id int
+
+// OrcModel is a view model for editing Orcs
+type OrcModel struct {
+	Orc
+	ID string
+}
