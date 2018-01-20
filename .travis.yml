@@ -12,6 +12,13 @@ install:
   - go get golang.org/x/tools/cmd/cover
   - go get github.com/mattn/goveralls
   - go get github.com/gorilla/mux
+  - go get github.com/alimac/orc
+
 script:
   - go test -covermode=count -coverprofile=coverage.out
   - $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci
+
+notifications:
+  email:
+    on_failure: never
+    on_success: never
