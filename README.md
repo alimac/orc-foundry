@@ -5,3 +5,13 @@
 # Orc Foundry
 
 Web/API development with Go.
+
+## Usage
+
+```
+cd orc-foundry
+go install
+orc-foundry
+```
+
+Visit http://localhost:8080 to view the web application.
