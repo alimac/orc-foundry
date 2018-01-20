@@ -65,3 +65,20 @@ func TestCreateOrc(t *testing.T) {
 	checkResponseCode(t, http.StatusOK, res.Code)
 	checkContent(t, res.Body.String(), "Meet Gonmund")
 }
+
+func TestUpdateOrc(t *testing.T) {
+	setupOrcs(1)
+	payload := url.Values{"name": {"Gonmund"}, "greeting": {"Fubu"}, "weapon": {"AgonySickle"}}
+
+	// Update orc
+	req, _ := http.NewRequest(http.MethodPut, "/orcs/update/1", bytes.NewBufferString(payload.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	res := executeRequest(req)
+	checkResponseCode(t, http.StatusFound, res.Code)
+
+	// Verify orc is updated
+	req, _ = http.NewRequest(http.MethodGet, "/orcs/view/1", nil)
+	res = executeRequest(req)
+	checkResponseCode(t, http.StatusOK, res.Code)
+	checkContent(t, res.Body.String(), "AgonySickle")
+}
