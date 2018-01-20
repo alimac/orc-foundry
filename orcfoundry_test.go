@@ -42,7 +42,7 @@ func TestEditOrc(t *testing.T) {
 func TestDeleteOrc(t *testing.T) {
 	setupOrcs(1)
 
-	// Delete orc
+	// Delete existing orc
 	req, _ := http.NewRequest(http.MethodDelete, "/orcs/delete/1", nil)
 	res := executeRequest(req)
 	checkResponseCode(t, http.StatusFound, res.Code)
@@ -51,15 +51,26 @@ func TestDeleteOrc(t *testing.T) {
 	req, _ = http.NewRequest(http.MethodGet, "/orcs/view/1", nil)
 	res = executeRequest(req)
 	checkResponseCode(t, http.StatusNotFound, res.Code)
+
+	// Delete non-existent orc
+	req, _ = http.NewRequest(http.MethodDelete, "/orcs/delete/666", nil)
+	res = executeRequest(req)
+	checkResponseCode(t, http.StatusBadRequest, res.Code)
 }
 
 func TestCreateOrc(t *testing.T) {
 	payload := url.Values{"name": {"Gonmund"}, "greeting": {"Fubu"}, "weapon": {"AgonySickle"}}
 
 	// Add an orc
-	req, _ := http.NewRequest(http.MethodPost, "/orcs/save", bytes.NewBufferString(payload.Encode()))
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req, _ := http.NewRequest(http.MethodGet, "/orcs/add", nil)
 	res := executeRequest(req)
+	checkResponseCode(t, http.StatusOK, res.Code)
+	checkContent(t, res.Body.String(), "Forge a new orc")
+
+	// Save an orc
+	req, _ = http.NewRequest(http.MethodPost, "/orcs/save", bytes.NewBufferString(payload.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	res = executeRequest(req)
 	checkResponseCode(t, http.StatusFound, res.Code)
 
 	// Verify orc exists
