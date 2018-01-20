@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
+	"github.com/alimac/orc"
 	"github.com/gorilla/mux"
 )
 
@@ -19,6 +21,7 @@ type App struct {
 func (app *App) Initialize() {
 	app.Router = mux.NewRouter()
 	app.initializeRoutes()
+	app.initializeOrcs()
 }
 
 // Run runs the app
@@ -49,4 +52,17 @@ func (app *App) initializeRoutes() {
 	app.Router.HandleFunc("/api/orcs", PostOrcHandler).Methods("POST")
 	app.Router.HandleFunc("/api/orcs/{id}", PutOrcHandler).Methods("PUT")
 	app.Router.HandleFunc("/api/orcs/{id}", DeleteOrcHandler).Methods("DELETE")
+}
+
+func (app *App) initializeOrcs() {
+	// Initalize app with 5 orcs
+	for i := 1; i <= 5; i++ {
+		id = i
+		orcStore[strconv.Itoa(id)] = Orc{
+			orc.Forge("name"),
+			orc.Forge("greeting"),
+			orc.Forge("weapon"),
+			time.Now(),
+		}
+	}
 }

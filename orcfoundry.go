@@ -97,7 +97,7 @@ func getOrc(w http.ResponseWriter, r *http.Request) {
 	if orc, ok := orcStore[key]; ok {
 		viewModel = OrcModel{orc, key}
 	} else {
-		http.Error(w, "Could not find the Orc to edit", http.StatusNotFound)
+		http.Error(w, "Could not find the Orc to view", http.StatusNotFound)
 	}
 	renderTemplate(w, "view", "base", viewModel)
 }
@@ -147,13 +147,6 @@ type OrcModel struct {
 }
 
 func main() {
-
-	// Create sample orcs
-	id++
-	orcStore[strconv.Itoa(id)] = Orc{"Urkhat", "Dabu", "DoomHammer", time.Now()}
-	id++
-	orcStore[strconv.Itoa(id)] = Orc{"Pigdug", "Zub zub", "DeathKettle", time.Now()}
-
 	app := App{}
 	app.Initialize()
 	app.Run(":8080")

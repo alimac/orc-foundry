@@ -21,12 +21,13 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func addOrcs(count int) {
+func setupOrcs(count int) {
+	// Empty orcStore
 	orcStore = nil
 	orcStore = make(map[string]Orc)
 
-	if count < 1 {
-		count = 1
+	if count == 0 {
+		return
 	}
 	for i := 1; i <= count; i++ {
 		orcStore[strconv.Itoa(i)] = Orc{"Urkhat", "Dabu", "DoomHammer", time.Now()}
@@ -47,21 +48,21 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 }
 
 func TestGetOrcsHandler(t *testing.T) {
-	addOrcs(5)
+	setupOrcs(5)
 	req, _ := http.NewRequest(http.MethodGet, "/api/orcs", nil)
 	res := executeRequest(req)
 	checkResponseCode(t, http.StatusOK, res.Code)
 }
 
 func TestGetOrcHandler(t *testing.T) {
-	addOrcs(1)
+	setupOrcs(1)
 	req, _ := http.NewRequest(http.MethodGet, "/api/orcs/1", nil)
 	res := executeRequest(req)
 	checkResponseCode(t, http.StatusOK, res.Code)
 }
 
 func TestDeleteOrcHandler(t *testing.T) {
-	addOrcs(1)
+	setupOrcs(1)
 
 	// Verify orc exists
 	req, _ := http.NewRequest(http.MethodGet, "/api/orcs/1", nil)
@@ -88,11 +89,11 @@ func TestPostOrcHandler(t *testing.T) {
 }
 
 func TestPutOrcHandler(t *testing.T) {
-	addOrcs(1)
-	id := 1
+	setupOrcs(1)
+	key := 1
 
 	// Verify orc exists
-	req, _ := http.NewRequest(http.MethodGet, fmt.Sprintf("/api/orcs/%d", id), nil)
+	req, _ := http.NewRequest(http.MethodGet, fmt.Sprintf("/api/orcs/%d", key), nil)
 	res := executeRequest(req)
 	checkResponseCode(t, http.StatusOK, res.Code)
 
@@ -101,12 +102,12 @@ func TestPutOrcHandler(t *testing.T) {
 
 	// Update orc
 	payload := []byte(`{"name": "Buldig", "greeting": "Swobu", "weapon":"DoomKitten"}`)
-	req, _ = http.NewRequest(http.MethodPut, fmt.Sprintf("/api/orcs/%d", id), bytes.NewBuffer(payload))
+	req, _ = http.NewRequest(http.MethodPut, fmt.Sprintf("/api/orcs/%d", key), bytes.NewBuffer(payload))
 	res = executeRequest(req)
 	checkResponseCode(t, http.StatusNoContent, res.Code)
 
 	// Get updated orc
-	req, _ = http.NewRequest(http.MethodGet, fmt.Sprintf("/api/orcs/%d", id), nil)
+	req, _ = http.NewRequest(http.MethodGet, fmt.Sprintf("/api/orcs/%d", key), nil)
 	res = executeRequest(req)
 	checkResponseCode(t, http.StatusOK, res.Code)
 

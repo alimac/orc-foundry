@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 	"testing"
 )
@@ -15,7 +17,7 @@ func checkContent(t *testing.T, content string, expected string) {
 }
 
 func TestGetOrcs(t *testing.T) {
-	addOrcs(1)
+	setupOrcs(1)
 
 	req, _ := http.NewRequest(http.MethodGet, "/", nil)
 	res := executeRequest(req)
@@ -24,7 +26,7 @@ func TestGetOrcs(t *testing.T) {
 }
 
 func TestEditOrc(t *testing.T) {
-	addOrcs(1)
+	setupOrcs(1)
 	id := 1
 
 	req, _ := http.NewRequest(http.MethodGet, fmt.Sprintf("/orcs/edit/%d", id), nil)
@@ -34,7 +36,7 @@ func TestEditOrc(t *testing.T) {
 }
 
 func TestDeleteOrc(t *testing.T) {
-	addOrcs(1)
+	setupOrcs(1)
 	id := 1
 
 	// Delete orc
