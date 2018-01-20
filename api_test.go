@@ -25,6 +25,7 @@ func setupOrcs(count int) {
 	// Empty orcStore
 	orcStore = nil
 	orcStore = make(map[string]Orc)
+	id = 0
 
 	if count == 0 {
 		return

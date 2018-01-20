@@ -59,8 +59,8 @@ func TestCreateOrc(t *testing.T) {
 	res := executeRequest(req)
 	checkResponseCode(t, http.StatusFound, res.Code)
 
-	// Verify orc exists using global id value
-	req, _ = http.NewRequest(http.MethodGet, fmt.Sprintf("/orcs/view/%d", id), nil)
+	// Verify orc exists
+	req, _ = http.NewRequest(http.MethodGet, "/orcs/view/1", nil)
 	res = executeRequest(req)
 	checkResponseCode(t, http.StatusOK, res.Code)
 	checkContent(t, res.Body.String(), "Meet Gonmund")
