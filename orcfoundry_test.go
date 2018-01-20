@@ -49,3 +49,19 @@ func TestDeleteOrc(t *testing.T) {
 	res = executeRequest(req)
 	checkResponseCode(t, http.StatusNotFound, res.Code)
 }
+
+func TestCreateOrc(t *testing.T) {
+	payload := url.Values{"name": {"Gonmund"}, "greeting": {"Fubu"}, "weapon": {"AgonySickle"}}
+
+	// Add an orc
+	req, _ := http.NewRequest(http.MethodPost, "/orcs/save", bytes.NewBufferString(payload.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	res := executeRequest(req)
+	checkResponseCode(t, http.StatusFound, res.Code)
+
+	// Verify orc exists using global id value
+	req, _ = http.NewRequest(http.MethodGet, fmt.Sprintf("/orcs/view/%d", id), nil)
+	res = executeRequest(req)
+	checkResponseCode(t, http.StatusOK, res.Code)
+	checkContent(t, res.Body.String(), "Meet Gonmund")
+}
