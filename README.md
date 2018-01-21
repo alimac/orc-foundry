@@ -28,7 +28,7 @@ Features I want to implement:
 - [ ] data store backend
 - [ ] feature flags (for multiple data stores?)
 - [x] deploy on Heroku
-- [ ] deploy on successful CI build
+- [x] deploy on successful CI build
 - [ ] deploy on Kubernetes
 - [ ] logging middleware
 - [ ] authentication middleware
