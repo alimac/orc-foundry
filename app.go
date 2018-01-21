@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
 	"github.com/alimac/orc"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -27,8 +29,9 @@ func (app *App) Initialize() {
 
 // Run runs the app
 func (app *App) Run(port string, host string) {
+	loggedRouter := handlers.LoggingHandler(os.Stdout, app.Router)
 	app.Server = &http.Server{
-		Handler:      app.Router,
+		Handler:      loggedRouter,
 		Addr:         fmt.Sprintf("%s%s", host, port),
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
