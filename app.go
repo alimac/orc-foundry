@@ -47,7 +47,7 @@ func (app *App) initializeRoutes() {
 	app.Router.HandleFunc("/orcs/update/{id}", updateOrc)
 	app.Router.HandleFunc("/orcs/delete/{id}", deleteOrc)
 
-	app.Router.HandleFunc("/api/orcs", GetOrcsHandler).Methods("GET")
+	app.Router.HandleFunc("/api/orcs", GetOrcHandler).Methods("GET")
 	app.Router.HandleFunc("/api/orcs/{id}", GetOrcHandler).Methods("GET")
 	app.Router.HandleFunc("/api/orcs", PostOrcHandler).Methods("POST")
 	app.Router.HandleFunc("/api/orcs/{id}", PutOrcHandler).Methods("PUT")

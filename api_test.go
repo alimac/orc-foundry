@@ -48,18 +48,36 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 	}
 }
 
-func TestGetOrcsHandler(t *testing.T) {
-	setupOrcs(5)
+func TestGetOrcHandler(t *testing.T) {
+	expected := 5
+	setupOrcs(expected)
+
+	// Test multiple orcs
 	req, _ := http.NewRequest(http.MethodGet, "/api/orcs", nil)
 	res := executeRequest(req)
 	checkResponseCode(t, http.StatusOK, res.Code)
-}
 
-func TestGetOrcHandler(t *testing.T) {
-	setupOrcs(1)
-	req, _ := http.NewRequest(http.MethodGet, "/api/orcs/1", nil)
-	res := executeRequest(req)
+	// verify that we get expected number of orcs
+	var orcs []Orc
+	json.Unmarshal(res.Body.Bytes(), &orcs)
+	actual := len(orcs)
+	if actual != expected {
+		t.Errorf("Expected length of %d. Got %d\n", expected, actual)
+	}
+
+	// Test single existing orc
+	req, _ = http.NewRequest(http.MethodGet, "/api/orcs/1", nil)
+	res = executeRequest(req)
 	checkResponseCode(t, http.StatusOK, res.Code)
+
+	var orc Orc
+	json.Unmarshal(res.Body.Bytes(), &orc)
+	checkContent(t, orc.Name, "Urkhat")
+
+	// Test non-existent orc
+	req, _ = http.NewRequest(http.MethodGet, "/api/orcs/666", nil)
+	res = executeRequest(req)
+	checkResponseCode(t, http.StatusNotFound, res.Code)
 }
 
 func TestDeleteOrcHandler(t *testing.T) {
