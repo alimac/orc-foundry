@@ -22,7 +22,7 @@ func TestApp(t *testing.T) {
 	// Use a goroutine to run the app to serve requests and exit
 	go func() {
 		defer a.Server.Close()
-		a.Run(":3000")
+		a.Run(":3000", "127.0.0.1")
 	}()
 
 	req, _ := http.NewRequest(http.MethodGet, "http://localhost:3000/", nil)
