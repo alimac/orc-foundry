@@ -143,10 +143,14 @@ func deleteOrc(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	port := os.Getenv("PORT")
+	host := ""
+
 	if port == "" {
 		port = "8080"
+		host = "127.0.0.1"
 	}
+
 	app := App{}
 	app.Initialize()
-	app.Run(":" + port)
+	app.Run(":"+port, host)
 }

@@ -26,8 +26,7 @@ func (app *App) Initialize() {
 }
 
 // Run runs the app
-func (app *App) Run(port string) {
-	host := ""
+func (app *App) Run(port string, host string) {
 	app.Server = &http.Server{
 		Handler:      app.Router,
 		Addr:         fmt.Sprintf("%s%s", host, port),
