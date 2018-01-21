@@ -30,6 +30,6 @@ Features I want to implement:
 - [x] deploy on Heroku
 - [x] deploy on successful CI build
 - [ ] deploy on Kubernetes
-- [ ] logging middleware
+- [x] logging middleware (Gorilla)
 - [ ] authentication middleware
 - [ ] tracing
