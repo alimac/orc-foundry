@@ -3,6 +3,7 @@ package main
 import (
 	"html/template"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
@@ -141,7 +142,11 @@ func deleteOrc(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
 	app := App{}
 	app.Initialize()
-	app.Run(":8080")
+	app.Run(":" + port)
 }
