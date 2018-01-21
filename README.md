@@ -15,3 +15,21 @@ orc-foundry
 ```
 
 Visit http://localhost:8080 to view the web application.
+
+## Features
+
+Features I want to implement:
+
+- [x] test coverage
+- [x] API
+- [x] web front-end
+- [ ] a _nicer_ web front-end (Angular?)
+- [ ] UUID instead of sequential ID
+- [ ] data store backend
+- [ ] feature flags (for multiple data stores?)
+- [x] deploy on Heroku
+- [ ] deploy on successful CI build
+- [ ] deploy on Kubernetes
+- [ ] logging middleware
+- [ ] authentication middleware
+- [ ] tracing
