@@ -28,3 +28,8 @@
 [[constraint]]
   name = "github.com/gorilla/mux"
   version = "1.6.1"
+
+[metadata.heroku]
+  root-package = "github.com/alimac/orc-foundry"
+  go-version = "go1.9.2"
+  install = [ "./..." ]
