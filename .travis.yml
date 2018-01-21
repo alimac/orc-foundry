@@ -21,3 +21,8 @@ notifications:
   email:
     on_failure: never
     on_success: never
+
+deploy:
+  provider: heroku
+  api_key:
+    secure: Q+HzyM0wwTLWsVlUYAmqzaV56RKjCOl3XwAwTgHMpkpcqrtKGIXoh3QBJIIyqgjazzQ8T7+H0Ur4l/862TXTvZuq/ZG8O746/IZUurd1EsDBL21LsJfor3x+cD0T6w4EuagI0tid9QaPsI6Trj0LqTaWGbTGqEEEga4GxjA+D2ArE3jNJVF/JpOO3bwh5T+9G1scFLPIuq/+lXRsACUVVNhm1KxsVJmMvBQ+S5Z5IpaJ/dZx0UXRFRd0SQHnLRSp5mnru/sb0nLSmw/MXI8rcVE32K2W6j683vIjSSrgxln7u5nNFqmopDZG9TC7fxmFoux85BwHSaZiL6z3KMlXpCOdNMMoxSCrc0DEzOcyEmpz1BPxeJc1RigFfMU66YurSN4/loDM1MDh7IrKQu++5a6nNPtwVffFAMWlPqauCpUNiZtYVg8rwovtQ7TDCeEYP6OVmM4rgtHIPf/j2YpMvaml1DuuoxMXcDwEWnMfw3EhFgUQy0hHoJTyaTUMkHV/G+mfEEQitZj6dC+W86IQXihJ6taeOU4jcJhFx3POqqY/qvZ23Jo8aiMbANkXH0qYxy8mFjKSFOHjVjBQ/JRqsmad3chgMeTg+WxUH5oHS5E7IFVRf5krJO0Nz8k4u9KSl2TfVqMm5n5oqelh3M86V8QstcLNXYIJXQahKYbg2F4=
