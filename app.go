@@ -14,6 +14,7 @@ import (
 // App struct contains app config
 type App struct {
 	Router *mux.Router
+	Server *http.Server
 }
 
 // Initialize sets up the app configuration and initializes
@@ -27,14 +28,14 @@ func (app *App) Initialize() {
 // Run runs the app
 func (app *App) Run(port string) {
 	host := "127.0.0.1"
-	server := &http.Server{
+	app.Server = &http.Server{
 		Handler:      app.Router,
 		Addr:         fmt.Sprintf("%s%s", host, port),
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
 
-	log.Fatal(server.ListenAndServe())
+	log.Fatal(app.Server.ListenAndServe())
 }
 
 func (app *App) initializeRoutes() {

@@ -15,6 +15,22 @@ func checkContent(t *testing.T, content string, expected string) {
 	}
 }
 
+func TestApp(t *testing.T) {
+	a := App{}
+	a.Initialize()
+
+	// Use a goroutine to run the app to serve requests and exit
+	go func() {
+		defer a.Server.Close()
+		a.Run(":3000")
+	}()
+
+	req, _ := http.NewRequest(http.MethodGet, "http://localhost:3000/", nil)
+	res := executeRequest(req)
+	checkResponseCode(t, http.StatusOK, res.Code)
+	checkContent(t, res.Body.String(), "Orcs!")
+}
+
 func TestGetOrcs(t *testing.T) {
 	setupOrcs(1)
 
