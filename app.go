@@ -16,6 +16,8 @@ import (
 type App struct {
 	Router *mux.Router
 	Server *http.Server
+	Port   string
+	Host   string
 }
 
 // Initialize sets up the app configuration and initializes
@@ -24,14 +26,23 @@ func (app *App) Initialize() {
 	app.Router = mux.NewRouter()
 	app.initializeRoutes()
 	app.initializeOrcs()
+
+	// Heroku - get port from environment
+	port := os.Getenv("PORT")
+
+	// Local and CI - set host and port
+	if port == "" {
+		app.Port = ":8080"
+		app.Host = "127.0.0.1"
+	}
 }
 
 // Run runs the app
-func (app *App) Run(port string, host string) {
+func (app *App) Run() {
 	loggedRouter := handlers.LoggingHandler(os.Stdout, app.Router)
 	app.Server = &http.Server{
 		Handler:      loggedRouter,
-		Addr:         fmt.Sprintf("%s%s", host, port),
+		Addr:         fmt.Sprintf("%s%s", app.Host, app.Port),
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}

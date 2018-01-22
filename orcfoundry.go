@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"html/template"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/alimac/orc"
@@ -135,15 +134,7 @@ func (a *App) deleteOrc(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	port := os.Getenv("PORT")
-	host := ""
-
-	if port == "" {
-		port = "8080"
-		host = "127.0.0.1"
-	}
-
 	app := App{}
 	app.Initialize()
-	app.Run(":"+port, host)
+	app.Run()
 }
