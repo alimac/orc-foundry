@@ -43,8 +43,8 @@ func (app *App) Run(port string, host string) {
 func (app *App) initializeRoutes() {
 	app.Router.HandleFunc("/", app.getOrc)
 	app.Router.HandleFunc("/orcs/view/{id}", app.getOrc)
-	app.Router.HandleFunc("/orcs/add", addOrc)
-	app.Router.HandleFunc("/orcs/save", saveOrc)
+	app.Router.HandleFunc("/orcs/add", app.addOrc)
+	app.Router.HandleFunc("/orcs/save", app.saveOrc)
 	app.Router.HandleFunc("/orcs/edit/{id}", editOrc)
 	app.Router.HandleFunc("/orcs/update/{id}", updateOrc)
 	app.Router.HandleFunc("/orcs/delete/{id}", deleteOrc)

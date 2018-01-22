@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -31,9 +30,7 @@ func PostOrcHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	orc.CreatedOn = time.Now()
-	id++
-	key := strconv.Itoa(id)
-	orcStore[key] = orc
+	createItem(orc)
 
 	json, err := json.Marshal(orc)
 	if err != nil {

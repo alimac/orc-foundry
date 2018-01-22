@@ -5,7 +5,6 @@ import (
 	"html/template"
 	"net/http"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/alimac/orc"
@@ -63,7 +62,7 @@ func (a *App) getOrc(w http.ResponseWriter, r *http.Request) {
 }
 
 // addOrc
-func addOrc(w http.ResponseWriter, r *http.Request) {
+func (a *App) addOrc(w http.ResponseWriter, r *http.Request) {
 	var viewModel OrcModel
 	viewModel = OrcModel{Orc{orc.Forge("name"), orc.Forge("greeting"),
 		orc.Forge("weapon"), time.Now()}, "0"}
@@ -72,18 +71,16 @@ func addOrc(w http.ResponseWriter, r *http.Request) {
 }
 
 // saveOrc
-func saveOrc(w http.ResponseWriter, r *http.Request) {
+func (a *App) saveOrc(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	name := r.PostFormValue("name")
-	greeting := r.PostFormValue("greeting")
-	weapon := r.PostFormValue("weapon")
-	orc := Orc{name, greeting, weapon, time.Now()}
+	orc := Orc{
+		r.PostFormValue("name"),
+		r.PostFormValue("greeting"),
+		r.PostFormValue("weapon"),
+		time.Now(),
+	}
 
-	// increment value of id for generating key for the map
-	id++
-	// convert id value to string
-	key := strconv.Itoa(id)
-	orcStore[key] = orc
+	createItem(orc)
 	http.Redirect(w, r, "/", 302)
 }
 

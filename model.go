@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -42,4 +43,13 @@ func getItems(key string) (status int, items []byte) {
 	}
 	items, _ = json.Marshal(orcs)
 	return http.StatusOK, items
+}
+
+func createItem(orc Orc) {
+	// Increment id
+	id++
+	// Convert id value to string
+	key := strconv.Itoa(id)
+	// Store item
+	orcStore[key] = orc
 }
