@@ -34,6 +34,9 @@ func (app *App) Initialize() {
 	if port == "" {
 		app.Port = ":8080"
 		app.Host = "127.0.0.1"
+	} else {
+		app.Port = port
+		app.Host = ":"
 	}
 }
 
