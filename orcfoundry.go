@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"html/template"
 	"net/http"
 	"os"
@@ -39,9 +40,26 @@ func renderTemplate(w http.ResponseWriter, name string, template string, viewMod
 	}
 }
 
-// getOrcs
-func getOrcs(w http.ResponseWriter, r *http.Request) {
-	renderTemplate(w, "index", "base", orcStore)
+// getOrc
+func (a *App) getOrc(w http.ResponseWriter, r *http.Request) {
+	// read value from route variable
+	vars := mux.Vars(r)
+	key := vars["id"]
+	status, items := getItems(key)
+
+	if status == http.StatusOK {
+		if key != "" {
+			var orc Orc
+			json.Unmarshal(items, &orc)
+			renderTemplate(w, "view", "base", OrcModel{orc, key})
+		} else {
+			var orcs []Orc
+			json.Unmarshal(items, &orcs)
+			renderTemplate(w, "index", "base", orcs)
+		}
+	} else {
+		http.Error(w, "Could not find the Orc to view", status)
+	}
 }
 
 // addOrc
@@ -83,23 +101,6 @@ func editOrc(w http.ResponseWriter, r *http.Request) {
 	} else {
 		http.Error(w, "Could not find the Orc to edit", http.StatusBadRequest)
 	}
-}
-
-// editOrc
-func getOrc(w http.ResponseWriter, r *http.Request) {
-	var viewModel OrcModel
-
-	// read value from route variable
-	vars := mux.Vars(r)
-	key := vars["id"]
-
-	if orc, ok := orcStore[key]; ok {
-		viewModel = OrcModel{orc, key}
-		renderTemplate(w, "view", "base", viewModel)
-	} else {
-		http.Error(w, "Could not find the Orc to view", http.StatusNotFound)
-	}
-
 }
 
 // updateOrc

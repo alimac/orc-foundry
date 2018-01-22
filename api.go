@@ -13,36 +13,11 @@ import (
 // GetOrcHandler provides an endpoint for getting Orcs
 func GetOrcHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	key := vars["id"]
+	status, json := getItems(vars["id"])
 
-	if key != "" {
-		// Retrieve from store
-		if orc, ok := orcStore[key]; ok {
-			w.Header().Set("Content-Type", "application/json")
-
-			json, err := json.Marshal(orc)
-			if err != nil {
-				panic(err)
-			}
-			w.WriteHeader(http.StatusOK)
-			w.Write(json)
-		} else {
-			w.WriteHeader(http.StatusNotFound)
-		}
-	} else {
-		var orcs []Orc
-
-		for _, v := range orcStore {
-			orcs = append(orcs, v)
-		}
-		w.Header().Set("Content-Type", "application/json")
-		json, err := json.Marshal(orcs)
-		if err != nil {
-			panic(err)
-		}
-		w.WriteHeader(http.StatusOK)
-		w.Write(json)
-	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	w.Write(json)
 }
 
 // PostOrcHandler provides an endpoint for creating new Orcs
