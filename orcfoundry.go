@@ -52,9 +52,10 @@ func (a *App) getOrc(w http.ResponseWriter, r *http.Request) {
 			json.Unmarshal(items, &orc)
 			renderTemplate(w, "view", "base", OrcModel{orc, key})
 		} else {
-			var orcs []Orc
-			json.Unmarshal(items, &orcs)
-			renderTemplate(w, "index", "base", orcs)
+			// TODO: replace with items
+			// var orcs []Orc
+			// json.Unmarshal(items, &orcs)
+			renderTemplate(w, "index", "base", orcStore)
 		}
 	} else {
 		http.Error(w, "Could not find the Orc to view", status)
@@ -85,7 +86,7 @@ func (a *App) saveOrc(w http.ResponseWriter, r *http.Request) {
 }
 
 // editOrc
-func editOrc(w http.ResponseWriter, r *http.Request) {
+func (a *App) editOrc(w http.ResponseWriter, r *http.Request) {
 	var viewModel OrcModel
 
 	// read value from route variable
@@ -101,39 +102,35 @@ func editOrc(w http.ResponseWriter, r *http.Request) {
 }
 
 // updateOrc
-func updateOrc(w http.ResponseWriter, r *http.Request) {
+func (a *App) updateOrc(w http.ResponseWriter, r *http.Request) {
 	// Read values from route variable
 	vars := mux.Vars(r)
-	key := vars["id"]
-	var orcToUpdate Orc
-	if orc, ok := orcStore[key]; ok {
-		r.ParseForm()
-		orcToUpdate.Name = r.PostFormValue("name")
-		orcToUpdate.Greeting = r.PostFormValue("greeting")
-		orcToUpdate.Weapon = r.PostFormValue("weapon")
-		orcToUpdate.CreatedOn = orc.CreatedOn
+	r.ParseForm()
+	orc := Orc{
+		r.PostFormValue("name"),
+		r.PostFormValue("greeting"),
+		r.PostFormValue("weapon"),
+		time.Now(),
+	}
+	status := updateItem(vars["id"], orc)
 
-		// delete existing item and add the updated item
-		delete(orcStore, key)
-		orcStore[key] = orcToUpdate
-		http.Redirect(w, r, "/", 302)
+	if status == http.StatusNoContent {
+		http.Redirect(w, r, "/", http.StatusFound)
 	} else {
-		http.Error(w, "Could not find the Orc to update", http.StatusBadRequest)
+		http.Error(w, "Could not find the Orc to update", status)
 	}
 }
 
 // deleteOrc is a handler for "/orcs/delete/{id}" which deletes an item from the store
-func deleteOrc(w http.ResponseWriter, r *http.Request) {
-	// read value from the route Variable
+func (a *App) deleteOrc(w http.ResponseWriter, r *http.Request) {
+	// Read value from the route Variable
 	vars := mux.Vars(r)
-	key := vars["id"]
-	// Remove from the Store
-	if _, ok := orcStore[key]; ok {
-		// delete existing item
-		delete(orcStore, key)
-		http.Redirect(w, r, "/", 302)
+	status := deleteItem(vars["id"])
+
+	if status == http.StatusNoContent {
+		http.Redirect(w, r, "/", http.StatusFound)
 	} else {
-		http.Error(w, "Could not find the Orc to delete", http.StatusBadRequest)
+		http.Error(w, "Could not find the Orc to delete", status)
 	}
 }
 

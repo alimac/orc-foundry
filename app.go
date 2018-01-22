@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/alimac/orc"
@@ -45,26 +44,25 @@ func (app *App) initializeRoutes() {
 	app.Router.HandleFunc("/orcs/view/{id}", app.getOrc)
 	app.Router.HandleFunc("/orcs/add", app.addOrc)
 	app.Router.HandleFunc("/orcs/save", app.saveOrc)
-	app.Router.HandleFunc("/orcs/edit/{id}", editOrc)
-	app.Router.HandleFunc("/orcs/update/{id}", updateOrc)
-	app.Router.HandleFunc("/orcs/delete/{id}", deleteOrc)
+	app.Router.HandleFunc("/orcs/edit/{id}", app.editOrc)
+	app.Router.HandleFunc("/orcs/update/{id}", app.updateOrc)
+	app.Router.HandleFunc("/orcs/delete/{id}", app.deleteOrc)
 
-	app.Router.HandleFunc("/api/orcs", GetOrcHandler).Methods("GET")
-	app.Router.HandleFunc("/api/orcs/{id}", GetOrcHandler).Methods("GET")
-	app.Router.HandleFunc("/api/orcs", PostOrcHandler).Methods("POST")
-	app.Router.HandleFunc("/api/orcs/{id}", PutOrcHandler).Methods("PUT")
-	app.Router.HandleFunc("/api/orcs/{id}", DeleteOrcHandler).Methods("DELETE")
+	app.Router.HandleFunc("/api/orcs", app.GetOrcHandler).Methods("GET")
+	app.Router.HandleFunc("/api/orcs/{id}", app.GetOrcHandler).Methods("GET")
+	app.Router.HandleFunc("/api/orcs", app.PostOrcHandler).Methods("POST")
+	app.Router.HandleFunc("/api/orcs/{id}", app.PutOrcHandler).Methods("PUT")
+	app.Router.HandleFunc("/api/orcs/{id}", app.DeleteOrcHandler).Methods("DELETE")
 }
 
 func (app *App) initializeOrcs() {
 	// Initalize app with 5 orcs
-	for i := 1; i <= 5; i++ {
-		id = i
-		orcStore[strconv.Itoa(id)] = Orc{
+	for i := 0; i < 5; i++ {
+		createItem(Orc{
 			orc.Forge("name"),
 			orc.Forge("greeting"),
 			orc.Forge("weapon"),
 			time.Now(),
-		}
+		})
 	}
 }

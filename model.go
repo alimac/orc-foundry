@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -52,4 +53,27 @@ func createItem(orc Orc) {
 	key := strconv.Itoa(id)
 	// Store item
 	orcStore[key] = orc
+}
+
+func updateItem(key string, o Orc) (status int) {
+	if orc, ok := orcStore[key]; ok {
+		// Retain created on timestamp
+		o.CreatedOn = orc.CreatedOn
+		// delete the existing item and add the updated item
+		delete(orcStore, key)
+		orcStore[key] = o
+		return http.StatusNoContent
+	}
+	log.Printf("Could not find key of Orc %s to update", key)
+	return http.StatusBadRequest
+}
+
+func deleteItem(key string) (status int) {
+	if _, ok := orcStore[key]; ok {
+		// Delete existing item
+		delete(orcStore, key)
+		return http.StatusNoContent
+	}
+	log.Printf("Could not find key of Orc %s to delete", key)
+	return http.StatusBadRequest
 }
