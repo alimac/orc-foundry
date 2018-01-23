@@ -37,6 +37,8 @@ func (app *App) Initialize() {
 	} else {
 		app.Port = port
 	}
+	// Tell the world we're up and running
+	fmt.Println("Starting orc-foundry...")
 }
 
 // Run runs the app
