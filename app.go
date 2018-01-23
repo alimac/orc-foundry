@@ -29,14 +29,13 @@ func (app *App) Initialize() {
 
 	// Heroku - get port from environment
 	port := os.Getenv("PORT")
+	app.Host = ""
 
 	// Local and CI - set host and port
 	if port == "" {
-		app.Port = ":8080"
-		app.Host = "127.0.0.1"
+		app.Port = "8080"
 	} else {
 		app.Port = port
-		app.Host = ":"
 	}
 }
 
@@ -45,7 +44,7 @@ func (app *App) Run() {
 	loggedRouter := handlers.LoggingHandler(os.Stdout, app.Router)
 	app.Server = &http.Server{
 		Handler:      loggedRouter,
-		Addr:         fmt.Sprintf("%s%s", app.Host, app.Port),
+		Addr:         fmt.Sprintf("%s:%s", app.Host, app.Port),
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
